@@ -28,6 +28,35 @@ def not_blank(question):
         else:
             return response
 
+# Checks users enter an integer to a given question
+def num_check(question): 
+    while True:
+
+        try:
+            response = int(input(question))
+            return response
+
+        except ValueError: 
+            print("Please enter an integer")
+
+# Calculate the ticket price based on the age 
+def calc_ticket_price(var_age):
+
+    # Ticket is $7.50 for users under 16
+    if var_age < 16:
+        price = 7.5
+    
+    # Ticket is $10.50 for users under 65
+    elif var_age < 65:
+        price = 10.5 
+
+    # Ticket price is $6.5 for seniors (65+)
+    else:
+        price = 6.5
+
+    return price
+
+
 
 
 # Main Routine...
@@ -46,23 +75,40 @@ if want_instructions == "yes":
 print()
 
 # Loop for selling tickets
-while True:
+while tickets_sold < max_tickets:
 
-    # If all tickets sold out, program ends
-    if max_tickets == 0:
-        print("Congratulations you have sold all tickets.")
-        break
-    
     # Program asks user
-    name = not_blank("Please enter your name or 'xxx' to quit ").lower()
+    name = not_blank("Please enter your name or 'xxx' to quit: ").lower()
 
-    if name != "xxx":
-        tickets_sold += 1
-        max_tickets -= 1
-    
-    # If the Max Amount of tickets not sold, it shows how many are left and how many were sold
-    else:
-        print(f"You sold {tickets_sold} ticket/s. There is {max_tickets} ticket/s still left")
+    if name == "xxx":
         break
     
+    age = num_check("Your Age: ")
 
+
+    if 12 <= age <= 120:
+        pass
+
+    elif age < 12:
+        print("You're too young for this movie")
+        continue
+
+    else:
+        print("?? That looks like a typo, please try again")
+        continue
+
+    # Calculate ticket cost
+    ticket_cost = calc_ticket_price(age)
+    print(f"Age: {age}, Ticket Price: ${ticket_cost:.2f}")
+    
+    tickets_sold += 1
+    
+
+
+# If all tickets sold out, program ends
+if tickets_sold == max_tickets:
+    print("Congratulations you have sold all tickets.")
+
+# If the Max Amount of tickets not sold, it shows how many are left and how many were sold
+else:   
+    print(f"You sold {tickets_sold} ticket/s. There is {max_tickets - tickets_sold} ticket/s still left")
