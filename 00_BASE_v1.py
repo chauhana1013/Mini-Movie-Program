@@ -70,7 +70,7 @@ def string_checker(question, num_letters, valid_responses):
 max_tickets = 3
 tickets_sold = 0
 
-# Lists for String Checker Function
+# Lists for String Checker 
 yes_no_list = ["yes", "no"]
 payment_list = ["cash", "credit"]
 
