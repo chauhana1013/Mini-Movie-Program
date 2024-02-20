@@ -60,13 +60,24 @@ total_profit = f"Total Profit: ${profit}"
 sales_status = "\n*** All the tickets have been sold ***"
 
 winner_heading = "\n---- Raffle Winner ----"
-winner_text = 
+winner_text = f"The winner of the raffle is {winner_name}. They have won ${total_won} i.e. Their ticket is free!"
 
-print(mini_movie_frame)
+# List holding content to print / write to file
+to_write = [heading, mini_movie_string, ticket_cost_heading, total_ticket_sales, total_profit, sales_status, winner_heading, winner_text]
 
-print()
-print("*---- Raffle Winner ----*")
-print(f"Congratulations {winner_name}. You have won ${total_won} ie: your ticket is free")
+for item in to_write:
+    print(item)
+
+# Write output to file create file to hold data (add .txt extension)
+write_to = f"{filename}.txt"
+text_file = open(write_to, "w+")
+
+for item in to_write:
+    text_file.write(item)
+    text_file.write("\n")
+
+# Close File
+text_file.close()
 
 
 
