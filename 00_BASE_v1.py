@@ -5,6 +5,27 @@ from datetime import date
 # Functions...
 
 
+# Shows Instructions
+def show_instructions():
+    print('''\n 
+***** Instructions *****
+
+For each ticket, enter ...
+- The person's name (can't be blank)
+- Age (between 12 and 120)
+- Payment Method (Cash / Credit)    
+
+When you have entered all the users, press 'xxx' to quit.
+
+The program will then display the ticket details
+including the cost of each ticket, the total cost 
+and the total profit.
+
+This information will also be automatically written to a text file.
+
+*************************''')
+
+
 # Checks that user response is not blank
 def not_blank(question):
 
@@ -94,11 +115,11 @@ mini_movie_dict = {
 
 # Asks user if they want to see the instructions
 print()
-want_instructions = string_checker("Do you want to read the instructions? ", 1, yes_no_list)
+want_instructions = string_checker("Do you want to read the instructions (y/n): ", 1, yes_no_list)
 
 # If they say yes, output 'program continues'
 if want_instructions == "yes":  
-    print("Display Instructions")
+    show_instructions()
 print()
 
 # Loop for selling tickets
@@ -107,9 +128,12 @@ while tickets_sold < max_tickets:
     # Program asks user
     name = not_blank("Please enter your name or 'xxx' to quit: ").lower()
 
-    if name == "xxx":
+    if name == "xxx" and len(all_names) > 0:
         break
-    
+    elif name == "xxx":
+        print("You must sell at least ONE ticket before quitting")
+        continue
+
     age = num_check("Your Age: ")
 
     if 12 <= age <= 120:
@@ -157,38 +181,62 @@ mini_movie_frame['Profit'] = mini_movie_frame['Ticket Price'] - 5
 total = mini_movie_frame['Total'].sum()
 profit = mini_movie_frame['Profit'].sum()
 
+# Choose winner and look up total won
+winner_name = random.choice(all_names)
+win_index = all_names.index(winner_name)
+total_won = mini_movie_frame.at[win_index, 'Total']
+
+
 # Currency Formatting (uses currency function)
 add_dollars = ['Ticket Price', 'Surcharge', 'Total', 'Profit']
 for var_item in add_dollars:
     mini_movie_frame[var_item] = mini_movie_frame[var_item].apply(currency)
 
-# Choose a winner from our name list
-winner_name = random.choice(all_names)
-
-# Get position of winner name in list
-win_index = all_names.index(winner_name)
-
-# Look up total amount won (ie: ticket price +surcharge)
-total_won = mini_movie_frame.at[win_index, 'Total']
 
 mini_movie_frame = mini_movie_frame.set_index('Name')
 
-print("*---- Ticket Data ----*")
+# **** Get current date for heading and file name ****
+# Get today's date
+today = date.today()
 
-# Output table with ticket data
-print(mini_movie_frame)
+# Get day, month and year as individual strings
+day = today.strftime("%d")
+month = today.strftime("%m")
+year = today.strftime("%Y")
 
-print()
-print("*---- Ticket Cost / Profit ----*")
+heading = f"---- Mini Movie Fundraiser Ticket Data ({day}/{month}/{year}) ----\n"
+filename = f"MMF_{year}_{month}_{day}"
 
-# Output total ticket sales and profit
-print(f"Total Ticket Sales: ${total:.2f}")
-print(f"Total Profit: ${profit:.2f}")
+# Change frame to a string so that we can export it to file
+mini_movie_string = pandas.DataFrame.to_string(mini_movie_frame)
 
-print()
-print("*---- Raffle Winner ----*")
-print(f"Congratulations {winner_name}. You have won {total_won} ie: your ticket is free")
+# Create strings for printing
+ticket_cost_heading = "\n----- Ticket Cost / Profit -----"
+total_ticket_sales = f"Total Ticket Sales: ${total}"
+total_profit = f"Total Profit: ${profit}"
 
+# Edit text below!! I
+sales_status = "\n*** All the tickets have been sold ***"
+
+winner_heading = "\n---- Raffle Winner ----"
+winner_text = f"The winner of the raffle is {winner_name}. They have won ${total_won} i.e. Their ticket is free!"
+
+# List holding content to print / write to file
+to_write = [heading, mini_movie_string, ticket_cost_heading, total_ticket_sales, total_profit, sales_status, winner_heading, winner_text]
+
+for item in to_write:
+    print(item)
+
+# Write output to file create file to hold data (add .txt extension)
+write_to = f"{filename}.txt"
+text_file = open(write_to, "w+")
+
+for item in to_write:
+    text_file.write(item)
+    text_file.write("\n")
+
+# Close File
+text_file.close()
 
 if tickets_sold == max_tickets:
     print("Congratulations you have sold all tickets.")
@@ -196,3 +244,4 @@ if tickets_sold == max_tickets:
 # If the Max Amount of tickets not sold, it shows how many are left and how many were sold
 else:   
     print(f"You sold {tickets_sold} ticket/s. There is {max_tickets - tickets_sold} ticket/s still left")
+
