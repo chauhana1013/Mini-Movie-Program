@@ -128,6 +128,7 @@ while tickets_sold < max_tickets:
     # Program asks user
     name = not_blank("Please enter your name or 'xxx' to quit: ").lower()
 
+    # Exit Loop if users type 'xxx' and have sold at least one ticket
     if name == "xxx" and len(all_names) > 0:
         break
     elif name == "xxx":
@@ -212,17 +213,26 @@ mini_movie_string = pandas.DataFrame.to_string(mini_movie_frame)
 
 # Create strings for printing
 ticket_cost_heading = "\n----- Ticket Cost / Profit -----"
-total_ticket_sales = f"Total Ticket Sales: ${total}"
-total_profit = f"Total Profit: ${profit}"
+total_ticket_sales = f"Total Ticket Sales: ${total:.2f}"
+total_profit = f"Total Profit: ${profit:.2f}"
 
-# Edit text below!! I
-sales_status = "\n*** All the tickets have been sold ***"
+# Shows how many tickets have been sold
+
+
+if tickets_sold == max_tickets:
+    sales_status = "\n*** All the tickets have been sold ***"
+
+# If the Max Amount of tickets not sold, it shows how many are left and how many were sold
+else:
+    sales_status = f"\n***** You sold {tickets_sold} out of {max_tickets} tickets *****"
 
 winner_heading = "\n---- Raffle Winner ----"
-winner_text = f"The winner of the raffle is {winner_name}. They have won ${total_won} i.e. Their ticket is free!"
+winner_text = f"The winner of the raffle is {winner_name}. They have won ${total_won:.2f} i.e. Their ticket is free!"
 
+print()
 # List holding content to print / write to file
-to_write = [heading, mini_movie_string, ticket_cost_heading, total_ticket_sales, total_profit, sales_status, winner_heading, winner_text]
+to_write = [heading, mini_movie_string, ticket_cost_heading, total_ticket_sales, total_profit,
+            sales_status, winner_heading, winner_text]
 
 for item in to_write:
     print(item)
@@ -238,10 +248,5 @@ for item in to_write:
 # Close File
 text_file.close()
 
-if tickets_sold == max_tickets:
-    print("Congratulations you have sold all tickets.")
 
-# If the Max Amount of tickets not sold, it shows how many are left and how many were sold
-else:   
-    print(f"You sold {tickets_sold} ticket/s. There is {max_tickets - tickets_sold} ticket/s still left")
 
